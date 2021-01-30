@@ -202,49 +202,43 @@ function keyPressed() {
 
 
 function saveTrack() {
-  console.log(myObs);
-  console.log(JSON.stringify(myObs));
-  console.log(JSON.parse(JSON.stringify(myObs)));
-  save(JSON.stringify(myObs), "track.json");
-  save(JSON.stringify(myCheckpoints), "check.json");
+  let track = {
+    obstacles: myObs,
+    checkPoints: myCheckpoints
+  }
+  save(JSON.stringify(track), "track.json");
+  //saveJSON(myCheckpoints, "check.json");
 }
 
-let track;
-let check;
 
 function loadTrack() {
-  track = loadStrings("track.json", loadCallback, errorCallback);
-  check = loadStrings("check.json", loadCallback2, errorCallback2);
+  loadJSON("track.json", "json",loadCallback, errorCallback);
 }
 
-function loadCallback() {
-  //console.log('track loaded.');
-  //console.log(track[0]);
-  //console.log(JSON.parse(JSON.parse(track[0])));
-  track = JSON.parse(JSON.parse(track[0])); //porque 2 veces parse?, no lo se, pero funciona
-  myObs = []; // reseto el Array
-  for (let i = 0; i < track.length; i++) {
-    myObs.push(new Obstacle(track[i].x1, track[i].y1, track[i].x2, track[i].y2, track[i].color));
+function loadCallback(data) {
+  console.log(`load: ${data}`);
+  track = JSON.parse(data); //porque 2 veces parse?, no lo se, pero funciona
+  console.log(`parsed: ${track}`)
+  myObs = createObstacleArray(track.obstacles); // reseto el Array
+  myCheckpoints = createObstacleArray(track.checkPoints);
+}
+
+
+
+function createObstacleArray(data){
+  let obstacleArray = [];
+  for (let i = 0; i < data.length; i++) {
+    obstacleArray.push(new Obstacle(data[i].x1, data[i].y1, data[i].x2, data[i].y2, data[i].color)); //hay que re hacer todo el tema de guardar y cargar pero paja
   }
+  return obstacleArray;
 }
 
-function loadCallback2() { // seguro hay una manera mejor que copiar y pegar esto asi, pero bueno
-  //console.log('checkpoints loaded.');
-  //console.log(check[0]);
-  console.log(JSON.parse(JSON.parse(check[0])));
-  check = JSON.parse(JSON.parse(check[0])); //porque 2 veces parse?, no lo se, pero funciona
-  myCheckpoints = []; // reseto el Array
-  for (let i = 0; i < check.length; i++) {
-    myCheckpoints.push(new Obstacle(check[i].x1, check[i].y1, check[i].x2, check[i].y2, check[i].color.levels)); //hay que re hacer todo el tema de guardar y cargar pero paja
-  }
+function errorCallback(err) {
+  console.log(`Error loading track: ${err}`);
 }
 
-function errorCallback() {
-  console.log("error loading track");
-}
-
-function errorCallback2() {
-  console.log("error loading checkpoints");
+function errorCallback2(err) {
+  console.log(`Error loading checkpoints ${err}`);
 }
 
 function nextGeneration() {
