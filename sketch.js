@@ -38,7 +38,8 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(800, 480);
+  let canvas = createCanvas(800, 480);
+  canvas.parent("canvasContainer");
   explosionSprite = new Sprite(explosionSpriteAnimation, explosionSpriteData);
   explosionSprite.setSpeed(0.25);
   for (let i = 0; i < populationSize; i++) {
@@ -47,17 +48,17 @@ function setup() {
   }
   noStroke();
   btnSaveTrack = createButton('Save track');
-  btnSaveTrack.position(20, height + 20);
+  btnSaveTrack.parent("controlsContainer");
   btnSaveTrack.mousePressed(saveTrack);
   btnLoadTrack = createButton('Load track');
-  btnLoadTrack.position(110, height + 20);
+  btnLoadTrack.parent("controlsContainer");
   btnLoadTrack.mousePressed(loadTrack);
   slider = createSlider(1, 20, 1);
+  slider.parent("controlsContainer");
   slider.value(3);
-  slider.position(200, height + 20);
   slider.style('width', '180px');
   slider2 = createSlider(100, 1200, 1);
-  slider2.position(400, height + 20);
+  slider2.parent("controlsContainer");
   slider2.style('width', '180px');
   slider2.value(600);
   pointsHistoryPlot = new GPlot(this, (width - 600) / 2, (height - 400) / 2, 600, 400);
@@ -108,7 +109,7 @@ function draw() {
   }
 
 
-  //display stuff in fore groundh
+  //display stuff in fore ground
 
   push()
   fill(255);
